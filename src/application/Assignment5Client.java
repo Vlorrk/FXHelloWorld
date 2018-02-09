@@ -33,10 +33,13 @@ public class Assignment5Client extends Application {
 	TextArea messages = new TextArea();
 	String outputMessage;
 	
-	
-	public void printTextField(String text) {
+	public void printToTextArea(String text) {
 		
-		messages.appendText("Client: "+outputMessage + "\n");
+		messages.appendText(text);
+	}
+	public void clientChat(String text) {
+		
+		messages.appendText("Client: "+text + "\n");
 	}
 	
 	@Override
@@ -57,7 +60,7 @@ public class Assignment5Client extends Application {
 			
 			
 			outputMessage = textField.getText();
-			printTextField(outputMessage);
+			clientChat(outputMessage);
 			textField.setText("");
 		});
 	
@@ -79,13 +82,13 @@ public class Assignment5Client extends Application {
 				Socket socket = new Socket("127.0.0.1",6000);
 
 				DataOutputStream toServer = new DataOutputStream (socket.getOutputStream());
+				toServer.flush();
 				DataInputStream fromServer = new DataInputStream(socket.getInputStream());
 				
-				//toServer.writeUTF(outputMessage);
-				toServer.flush();
+				printToTextArea("Streams Connected!\n");
 				
-				outputMessage = fromServer.readUTF();
-				messages.appendText(outputMessage +"\n");
+				
+				
 				
 				socket.close();
 		 }

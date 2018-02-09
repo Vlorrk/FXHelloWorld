@@ -32,8 +32,11 @@ public class Assignment5Server extends Application {
 	TextArea messages = new TextArea();
 	String outputMessage;
 	
-	
-	public void printTextField(String text) {
+public void printToTextArea(String text) {
+		
+		messages.appendText(text);
+	}
+	public void serverChat(String text) {
 		
 		messages.appendText("Server: "+outputMessage + "\n");
 	}
@@ -56,7 +59,7 @@ public class Assignment5Server extends Application {
 			
 			
 			outputMessage = textField.getText();
-			printTextField(outputMessage);
+			serverChat(outputMessage);
 			textField.setText("");
 		});
 	
@@ -80,9 +83,13 @@ public class Assignment5Server extends Application {
 			try {
 				ServerSocket serverSocket = new ServerSocket(6000);
 				
+				printToTextArea("Waiting to connect...\n");
+				
 				Socket socket = serverSocket.accept();
 				
+				printToTextArea("Connected to " + socket.getPort());
 				DataOutputStream outputToClient = new DataOutputStream (socket.getOutputStream());
+				outputToClient.flush();
 				DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
 				
 				String msg = inputFromClient.readUTF();
