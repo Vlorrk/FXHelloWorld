@@ -7,6 +7,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -81,13 +83,20 @@ public class Assignment5Client extends Application {
 		 try {
 				Socket socket = new Socket("127.0.0.1",6000);
 
-				DataOutputStream toServer = new DataOutputStream (socket.getOutputStream());
-				toServer.flush();
-				DataInputStream fromServer = new DataInputStream(socket.getInputStream());
+				ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+				output.flush();
+				
+				ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
 				
 				printToTextArea("Streams Connected!\n");
 				
-				
+				try {
+					outputMessage = (String) input.readObject();
+					clientChat(outputMessage);
+				} catch (ClassNotFoundException e1) {
+					
+					e1.printStackTrace();
+				}
 				
 				
 				socket.close();

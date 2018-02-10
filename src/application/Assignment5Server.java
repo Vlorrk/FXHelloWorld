@@ -7,6 +7,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -38,7 +40,7 @@ public void printToTextArea(String text) {
 	}
 	public void serverChat(String text) {
 		
-		messages.appendText("Server: "+outputMessage + "\n");
+		messages.appendText("Server: "+text+ "\n");
 	}
 	
 	@Override
@@ -87,15 +89,20 @@ public void printToTextArea(String text) {
 				
 				Socket socket = serverSocket.accept();
 				
-				printToTextArea("Connected to " + socket.getPort());
-				DataOutputStream outputToClient = new DataOutputStream (socket.getOutputStream());
-				outputToClient.flush();
-				DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
+				ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+				output.flush();
 				
-				String msg = inputFromClient.readUTF();
+				ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
 				
-				outputToClient.writeUTF(msg);
-				messages.appendText(msg);
+				printToTextArea("Streams Connected!\n");
+				
+				try {
+					outputMessage = (String) input.readObject();
+					serverChat(outputMessage);
+				} catch (ClassNotFoundException e1) {
+					
+					e1.printStackTrace();
+				}
 				
 				
 				
